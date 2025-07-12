@@ -10,6 +10,9 @@ DEFAULT_CHARSET = 'utf-8'
 # Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 # Secret key
 SECRET_KEY = 'django-insecure-1pch%x!zq9zu7sylr5u-00e%0pk2bexo2o7yn@az3gbsg=1q7u'
 
