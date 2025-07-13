@@ -5,7 +5,8 @@
   "scripts": {
     "build": "cd frontend && npm install && npm run build",
     "postinstall": "cd backend && pip install -r requirements.txt",
-    "start": "cd backend && gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT"
+    "start": "cd backend && gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT",
+    "heroku-postbuild": "cd frontend && npm install && npm run build"
   },
   "dependencies": {
     "react-beautiful-dnd": "^13.1.1"
