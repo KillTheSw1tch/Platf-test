@@ -69,7 +69,6 @@ urlpatterns = [
     path("api-auth/", include("rest_framework.urls")),
 
     # 🏠 Статические страницы
-    path('', TemplateView.as_view(template_name="api/home.html"), name='home'),
     path('registration/', TemplateView.as_view(template_name='api/registrationCarrier.html'), name='registration'),
     path('login/', TemplateView.as_view(template_name='api/login.html'), name='login'),
 
