@@ -14,3 +14,6 @@ Pillow
 pyotp
 qrcode
 requests
+gunicorn
+whitenoise
+dj-database-url

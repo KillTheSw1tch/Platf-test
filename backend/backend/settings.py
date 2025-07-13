@@ -2,6 +2,7 @@ from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
 import os
+import dj_database_url
 
 load_dotenv()
 
@@ -11,13 +12,13 @@ DEFAULT_CHARSET = 'utf-8'
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Secret key
-SECRET_KEY = 'django-insecure-1pch%x!zq9zu7sylr5u-00e%0pk2bexo2o7yn@az3gbsg=1q7u'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-1pch%x!zq9zu7sylr5u-00e%0pk2bexo2o7yn@az3gbsg=1q7u')
 
 # Debug mode
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
 # Allowed hosts
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
 # REST framework settings
 REST_FRAMEWORK = {
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # В начало, чтобы CORS работал корректно
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Для статических файлов
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -85,13 +87,18 @@ TEMPLATES = [
 # WSGI application
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# Database settings (SQLite)
+# Database settings
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# Налаштування PostgreSQL для Heroku
+DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL:
+    DATABASES['default'] = dj_database_url.parse(DATABASE_URL)
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -128,7 +135,14 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+# Налаштування WhiteNoise для статичних файлів
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -167,17 +181,17 @@ OUTLOOK_USER = os.getenv('OUTLOOK_USER')
 OUTLOOK_PASSWORD = os.getenv('OUTLOOK_PASSWORD')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'mishafeshannnn@gmail.com'
-EMAIL_HOST_PASSWORD = 'mqifddrlbbxmvyot'                                 
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True').lower() == 'true'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'mishafeshannnn@gmail.com')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'mqifddrlbbxmvyot')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
 
 CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:5174',
     'http://localhost:5174',
+    'https://your-app-name.herokuapp.com',  # Замініть на вашу назву додатку
 ]
 CORS_ALLOWS_CREDENTIALS = True
 
@@ -188,12 +202,23 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 ASGI_APPLICATION = 'backend.asgi.application'
 
+# Налаштування Redis для Heroku
+REDIS_URL = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379')
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
+            "hosts": [REDIS_URL],
         },
     },
 }
+
+# Security settings for production
+if not DEBUG:
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    X_FRAME_OPTIONS = 'DENY'
 

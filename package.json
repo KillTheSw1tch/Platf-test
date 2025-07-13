@@ -1,5 +1,17 @@
 {
+  "name": "platforma",
+  "version": "1.0.0",
+  "description": "Full-stack web application",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "postinstall": "cd backend && pip install -r requirements.txt",
+    "start": "cd backend && python manage.py runserver 0.0.0.0:$PORT"
+  },
   "dependencies": {
     "react-beautiful-dnd": "^13.1.1"
+  },
+  "engines": {
+    "node": "18.x",
+    "npm": "9.x"
   }
 }

@@ -15,6 +15,12 @@ def main():
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         ) from exc
+    
+    # Збираємо статичні файли при запуску в production
+    if len(sys.argv) == 1 and os.getenv('DYNO'):
+        from django.core.management import execute_from_command_line
+        execute_from_command_line(['manage.py', 'collectstatic', '--noinput'])
+    
     execute_from_command_line(sys.argv)
 
 
