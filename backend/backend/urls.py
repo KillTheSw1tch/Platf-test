@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
@@ -23,8 +23,8 @@ from api.views import (
     TeamMemberListView, get_company_info, SearchCargoView, SearchTruckView,
     GetTeamMembersView, GetUserOrdersView, find_order_by_number, soft_delete_booking_for_user,
     generate_2fa_qr, verify_2fa_code, Verify2FAView, Disable2FAView, Verify2FALoginView,
-    Verify2FALoginView, ChangePasswordView, notifications_toggle_view, ReviewViewSet,
-    get_user_rating, get_user_rating_by_email,
+    ChangePasswordView, notifications_toggle_view, ReviewViewSet,
+    get_user_rating, get_user_rating_by_email, FrontendAppView,
 )
 
 # 📦 Роутер для ViewSet'ов
@@ -120,6 +120,11 @@ urlpatterns = [
 
     path('api/notifications/', get_user_notifications, name='user-notifications'),
     path('api/notifications/<int:notification_id>/read/', mark_notification_as_read, name='mark-notification-read'),
+]
+
+# SPA: всі не-API і не-admin шляхи віддають index.html
+urlpatterns += [
+    re_path(r'^(?!api/|admin/).*$', FrontendAppView.as_view()),
 ]
 
 # ⚙️ Для отдачи медиафайлов в режиме разработки

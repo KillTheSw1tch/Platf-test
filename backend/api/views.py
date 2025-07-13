@@ -47,6 +47,15 @@ from .serializers import ReviewSerializer
 
 from .models import Review
 
+import os
+from django.views.generic import View
+from django.http import FileResponse
+
+class FrontendAppView(View):
+    def get(self, request):
+        file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '../frontend/dist/index.html')
+        return FileResponse(open(file_path, 'rb'))
+
 
 logger = logging.getLogger(__name__)
 
