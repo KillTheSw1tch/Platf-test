@@ -10,7 +10,7 @@ DEFAULT_CHARSET = 'utf-8'
 
 # Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+PROJECT_ROOT = BASE_DIR.parent
 # Secret key
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-1pch%x!zq9zu7sylr5u-00e%0pk2bexo2o7yn@az3gbsg=1q7u')
 
@@ -71,7 +71,10 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['BASE_DIR / "frontend" / "dist"'],
+        'DIRS': [
+            PROJECT_ROOT / "frontend" / "dist",
+            BASE_DIR / "frontend" / "dist"
+            ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -136,7 +139,7 @@ USE_TZ = True
 
 # Static files
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = PROJECT_ROOT / "staticfiles"
 STATICFILES_DIRS = [
     BASE_DIR / "frontend" / "dist"
 ]

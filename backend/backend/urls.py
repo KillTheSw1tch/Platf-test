@@ -123,7 +123,7 @@ urlpatterns = [
 
 # SPA: всі не-API і не-admin шляхи віддають index.html
 urlpatterns += [
-    re_path(r'^(?!api/|admin/).*$', FrontendAppView.as_view()),
+    re_path(r'^(?!api/|admin/|static/).*$', TemplateView.as_view(template_name="index.html")),
 ]
 
 # ⚙️ Для отдачи медиафайлов в режиме разработки
